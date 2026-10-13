@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>TurnBonusRaptor</title>
+
+    <!-- STEP 1: Connect the external CSS file -->
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <!-- STEP 1: Connect the external JavaScript file -->
+    <script src="js/script.js" defer></script>
+  </head>
+
+  <body>
+    <!-- STEP 1: Application header -->
+    <header>
+      <h1>TurnBonusRaptor</h1>
+      <p>Shift, Production & Bonus Tracker</p>
+    </header>
+
+    <!-- STEP 1: Main application area -->
+    <main>
+      <section>
+        <h2>Welcome to TurnBonusRaptor</h2>
+
+        <!-- STEP 2: Shift entry form -->
+        <section id="shiftEntrySection">
+          <h2>Add Shift Entry</h2>
+
+          <p>
+            Record the work completed during one shift. The estimated bonus will
+            be calculated from units completed and the product rate.
+          </p>
+
+          <form id="shiftForm" novalidate>
+            <!-- Date -->
+            <div>
+              <label for="shiftDate">Date</label>
+              <input type="date" id="shiftDate" name="shiftDate" required />
+            </div>
+
+            <!-- Project -->
+            <div>
+              <label for="projectName">Project</label>
+              <input
+                type="text"
+                id="projectName"
+                name="projectName"
+                placeholder="Example: Project A"
+                required
+              />
+            </div>
+
+            <!-- Product number -->
+            <div>
+              <label for="productNumber">Product number</label>
+              <input
+                type="text"
+                id="productNumber"
+                name="productNumber"
+                placeholder="Example: P-1052"
+                required
+              />
+            </div>
+
+            <!-- Batch number -->
+            <div>
+              <label for="batchNumber">Batch number</label>
+              <input
+                type="text"
+                id="batchNumber"
+                name="batchNumber"
+                placeholder="Example: B-7842"
+                required
+              />
+            </div>
+
+            <!-- Hours worked -->
+            <div>
+              <label for="hoursWorked">Hours worked</label>
+              <input
+                type="number"
+                id="hoursWorked"
+                name="hoursWorked"
+                min="0.1"
+                step="0.1"
+                placeholder="Example: 6.5"
+                required
+              />
+            </div>
+
+            <!-- Units completed -->
+            <div>
+              <label for="unitsCompleted">Units completed</label>
+              <input
+                type="number"
+                id="unitsCompleted"
+                name="unitsCompleted"
+                min="0"
+                step="1"
+                placeholder="Example: 240"
+                required
+              />
+            </div>
+
+            <!-- Bonus rate -->
+            <div>
+              <label for="unitRate">Bonus rate per unit (€)</label>
+              <input
+                type="number"
+                id="unitRate"
+                name="unitRate"
+                min="0"
+                step="0.001"
+                placeholder="Example: 0.08"
+                required
+              />
+            </div>
+
+            <!-- Informational message for valid zero values -->
+            <p id="shiftMessage" aria-live="polite"></p>
+
+            <!-- Submit button -->
+            <button type="submit">Add Shift</button>
+          </form>
+        </section>
+        <p>
+          Track your shifts, production units and estimated performance bonuses.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

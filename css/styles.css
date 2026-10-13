@@ -1,0 +1,344 @@
+/* ==================================================
+   STEP 3: TURNBONUSRAPTOR - CSS FOUNDATION
+   ================================================== */
+
+/* --------------------------------------------------
+   STEP 3.1: Colour variables
+   -------------------------------------------------- */
+
+:root {
+  --background: #0d1210;
+
+  --surface: rgba(18, 45, 10, 0.22);
+  --surface-strong: rgba(5, 51, 11, 0.52);
+  --surface-soft: rgba(255, 255, 255, 0.06);
+
+  --text: #f2f5f3;
+  --secondary-text: #b8c4be;
+  --heading-accent: #e6b94a;
+  --label-text: #e4ebe7;
+  --placeholder-text: #7f8d86;
+  --money-accent: #7ee2a8;
+  --warning: #f0c674;
+  --error: #ff8a80;
+
+  --primary: rgba(46, 207, 10, 0.559);
+  --primary-hover: rgba(16, 35, 179, 0.88);
+
+  --border: rgba(12, 221, 176, 0.3331);
+  --focus: #0c7617;
+
+  --info-background: rgba(71, 122, 98, 0.18);
+  --info-text: #d2f5e4;
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* --------------------------------------------------
+   STEP 3.2: Light-theme variables
+    activated it with JavaScript.
+   -------------------------------------------------- */
+
+body.light-theme {
+  --background: #eef2ef;
+  --surface: rgba(245, 248, 246, 0.72);
+  --surface-strong: rgba(255, 255, 255, 0.82);
+  --surface-soft: rgba(0, 0, 0, 0.04);
+
+  --text: #18201c;
+  --secondary-text: #4f5b55;
+
+  --heading-accent: #9a6f00;
+  --label-text: #26332d;
+  --placeholder-text: #6f7a74;
+
+  --primary: rgba(42, 130, 72, 0.85);
+  --primary-hover: rgba(16, 35, 179, 0.88);
+
+  --border: rgba(24, 95, 70, 0.35);
+  --focus: #0c7617;
+
+  --info-background: rgba(71, 122, 98, 0.15);
+  --info-text: #264f3d;
+
+  --warning: #9a6f00;
+  --error: #b42318;
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* --------------------------------------------------
+   STEP 3.3: Basic page styling
+   -------------------------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------
+   STEP 3.15: Responsive background image
+   -------------------------------------------------- */
+
+body {
+  margin: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  color: var(--text);
+  line-height: 1.6;
+
+  /* Fallback colour if the image does not load */
+  background-color: var(--background);
+
+  /* Desktop background */
+  background-image:
+    linear-gradient(rgba(10, 15, 13, 0.45), rgba(10, 15, 13, 0.62)),
+    url("../images/background-desktop.webp");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  min-height: 100vh;
+}
+
+/* --------------------------------------------------
+   STEP 3.4: Application header
+   -------------------------------------------------- */
+
+header {
+  background-color: rgba(18, 24, 22, 0.68);
+  color: rgb(126, 117, 117);
+
+  padding: 2rem 1rem;
+  text-align: center;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  color: #5807ae;
+}
+
+header p {
+  margin: 0.4rem 0 0;
+  color: var(--secondary-text);
+}
+
+/* --------------------------------------------------
+   STEP 3.5: Main application container
+   -------------------------------------------------- */
+
+main {
+  width: min(100% - 2rem, 900px);
+  margin: 2rem auto;
+}
+
+/* --------------------------------------------------
+   STEP 3.6: Application sections
+   -------------------------------------------------- */
+
+section {
+  background-color: var(--surface);
+
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  border-radius: 16px;
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow);
+
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* --------------------------------------------------
+   STEP 3.6.1: Transparent inner shift form
+   -------------------------------------------------- */
+#shiftEntrySection {
+  background-color: transparent;
+}
+
+section h2 {
+  margin-top: 0;
+}
+
+/* --------------------------------------------------
+   STEP 3.7: Form layout
+   -------------------------------------------------- */
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+form div {
+  display: grid;
+  gap: 0.35rem;
+}
+
+/* --------------------------------------------------
+   STEP 3.8: Form labels
+   -------------------------------------------------- */
+
+label {
+  font-weight: bold;
+}
+
+/* --------------------------------------------------
+   STEP 3.9: Form controls
+   -------------------------------------------------- */
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+input,
+select {
+  width: 100%;
+
+  padding: 0.75rem;
+
+  color: var(--text);
+  background-color: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+
+/* --------------------------------------------------
+   STEP 3.10: Accessible keyboard focus
+   -------------------------------------------------- */
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------
+   STEP 3.11: Buttons
+   -------------------------------------------------- */
+
+button {
+  padding: 0.8rem 1.2rem;
+
+  border: none;
+  border-radius: 7px;
+
+  background-color: var(--primary);
+  color: white;
+
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--primary-hover);
+}
+
+/* --------------------------------------------------
+   STEP 3.12: Informational messages
+   -------------------------------------------------- */
+
+#shiftMessage {
+  min-height: 1.5rem;
+}
+
+.info-message {
+  padding: 0.75rem;
+
+  background-color: var(--info-background);
+  color: var(--info-text);
+
+  border-radius: 7px;
+}
+
+/* --------------------------------------------------
+   STEP 3.13: Validation styles
+   Prepared for JavaScript.
+   -------------------------------------------------- */
+
+.input-error {
+  border: 2px solid var(--error);
+}
+
+.error-message {
+  color: var(--error);
+  font-weight: bold;
+}
+
+/* --------------------------------------------------
+   STEP 3.14: Responsive design
+   -------------------------------------------------- */
+
+@media (min-width: 700px) {
+  #shiftForm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #shiftForm button,
+  #shiftMessage {
+    grid-column: 1 / -1;
+  }
+}
+
+/* --------------------------------------------------
+   STEP 3.16: Tablet background
+   -------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  body {
+    background-image:
+      linear-gradient(rgba(10, 15, 13, 0.45), rgba(10, 15, 13, 0.62)),
+      url("../images/background-tablet.webp");
+  }
+}
+
+/* --------------------------------------------------
+   STEP 3.17: Mobile background
+   -------------------------------------------------- */
+
+@media (max-width: 699px) {
+  body {
+    background-image:
+      linear-gradient(rgba(10, 15, 13, 0.45), rgba(10, 15, 13, 0.62)),
+      url("../images/background-mobile.webp");
+
+    background-attachment: scroll;
+    background-position: center top;
+  }
+}
+
+/* --------------------------------------------------
+   STEP 3.18: Text colour hierarchy
+   -------------------------------------------------- */
+
+header h1 {
+  color: #def0d5df;
+}
+
+section h2 {
+  color: var(--heading-accent);
+}
+
+label {
+  color: var(--label-text);
+}
+
+p {
+  color: var(--secondary-text);
+}
+
+input::placeholder,
+select::placeholder {
+  color: var(--placeholder-text);
+}
