@@ -158,6 +158,29 @@ section {
 }
 
 /* --------------------------------------------------
+   Shift entry cards
+   -------------------------------------------------- */
+
+.shift-entry {
+  margin-top: 1rem;
+  padding: 1rem;
+
+  background-color: rgba(0, 0, 0, 0.18);
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.shift-entry h3 {
+  margin-top: 0;
+  color: var(--heading-accent);
+}
+
+.shift-entry p {
+  margin: 0.3rem 0;
+}
+
+/* --------------------------------------------------
    STEP 3.6.1: Transparent inner shift form
    -------------------------------------------------- */
 #shiftEntrySection {

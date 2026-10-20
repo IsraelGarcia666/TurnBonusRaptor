@@ -30,8 +30,22 @@ const unitRate = document.querySelector("#unitRate");
 // Select the area used for messages
 const shiftMessage = document.querySelector("#shiftMessage");
 
+// Select the shift entries area (STEP 5)
+const shiftList = document.querySelector("#shiftList");
+const emptyEntriesMessage = document.querySelector("#emptyEntriesMessage");
+
 // Development check: confirm the form was found in the DOM
 console.log(shiftForm);
+
+// --------------------------------------------------
+// Helper function: format date for display
+// --------------------------------------------------
+
+function formatDate(dateString) {
+  const [year, month, day] = dateString.split("-");
+
+  return `${day}.${month}.${year}`;
+}
 
 // ==================================================
 // JS STEP 2: LISTEN FOR FORM SUBMISSION AND READ INPUT
@@ -136,4 +150,76 @@ shiftForm.addEventListener("submit", function (event) {
       "Note: This entry has a €0 bonus rate. The entry is still valid.";
     shiftMessage.className = "info-message";
   }
+
+  // ==================================================
+  // JS STEP 4: CALCULATE THE BONUS
+  // ==================================================
+
+  // Convert the input values from text to numbers
+  const unitsNumber = Number(units);
+  const rateNumber = Number(rate);
+
+  // Calculate the estimated bonus
+  const bonus = unitsNumber * rateNumber;
+
+  // Development check
+  console.log("Estimated bonus:", bonus.toFixed(2), "€");
+
+  // ==================================================
+  // JS STEP 5: CREATE AND DISPLAY A SHIFT ENTRY
+  // ==================================================
+
+  // Store the information for one shift in an object
+  const shiftEntry = {
+    date: date,
+    project: project,
+    product: product,
+    batch: batch,
+    hours: Number(hours),
+    units: unitsNumber,
+    rate: rateNumber,
+    bonus: bonus,
+  };
+
+  // Development check
+  console.log("Shift entry:", shiftEntry);
+
+  // Create a new HTML article for the shift
+  const entryCard = document.createElement("article");
+  entryCard.classList.add("shift-entry");
+
+  // Create the title (security code entryTitle.textContent, not using http:// to avoid XSS)
+  const entryTitle = document.createElement("h3");
+  entryTitle.textContent =
+    formatDate(shiftEntry.date) + " – " + shiftEntry.project;
+
+  // Create product and batch information
+  const productInfo = document.createElement("p");
+  productInfo.textContent =
+    "Product: " + shiftEntry.product + " | Batch: " + shiftEntry.batch;
+
+  // Create hours and units information
+  const workInfo = document.createElement("p");
+  workInfo.textContent =
+    "Hours: " + shiftEntry.hours + " | Units: " + shiftEntry.units;
+
+  // Create rate information
+  const rateInfo = document.createElement("p");
+  rateInfo.textContent = "Rate: €" + shiftEntry.rate.toFixed(3) + " / unit";
+
+  // Create bonus information
+  const bonusInfo = document.createElement("p");
+  bonusInfo.textContent = "Estimated bonus: €" + shiftEntry.bonus.toFixed(2);
+
+  // Put all the new elements inside the card
+  entryCard.append(entryTitle, productInfo, workInfo, rateInfo, bonusInfo);
+
+  // Hide the "No shifts added yet" message
+  emptyEntriesMessage.hidden = true;
+
+  // Add the completed card to the webpage
+  shiftList.append(entryCard);
+
+  // Clear the form for the next shift
+  shiftForm.reset();
 });
