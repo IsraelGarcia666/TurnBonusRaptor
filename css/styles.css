@@ -339,8 +339,33 @@ button:hover {
     background-attachment: scroll;
     background-position: center top;
   }
+
+  main {
+    width: calc(100% - 1rem);
+    margin: 1rem auto;
+  }
+
+  section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-width: 2px;
+  }
+
+  #shiftEntrySection {
+    padding: 1rem;
+  }
+
+  input,
+  select,
+  button {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
+.shift-entry {
+  overflow-wrap: anywhere;
+}
 /* --------------------------------------------------
    STEP 3.18: Text colour hierarchy
    -------------------------------------------------- */

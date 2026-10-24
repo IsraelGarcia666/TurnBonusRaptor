@@ -47,6 +47,115 @@ function formatDate(dateString) {
   return `${day}.${month}.${year}`;
 }
 
+// --------------------------------------------------
+// Helper function: display one shift entry (for step 6.2)
+// --------------------------------------------------
+
+function displayShiftEntry(shiftEntry, index) {
+  const entryCard = document.createElement("article");
+  entryCard.classList.add("shift-entry");
+
+  const entryTitle = document.createElement("h3");
+  entryTitle.textContent =
+    formatDate(shiftEntry.date) + " – " + shiftEntry.project;
+
+  const productInfo = document.createElement("p");
+  productInfo.textContent =
+    "Product: " + shiftEntry.product + " | Batch: " + shiftEntry.batch;
+
+  const workInfo = document.createElement("p");
+  workInfo.textContent =
+    "Hours: " + shiftEntry.hours + " | Units: " + shiftEntry.units;
+
+  const rateInfo = document.createElement("p");
+  rateInfo.textContent = "Rate: €" + shiftEntry.rate.toFixed(3) + " / unit";
+
+  const bonusInfo = document.createElement("p");
+  bonusInfo.textContent = "Estimated bonus: €" + shiftEntry.bonus.toFixed(2);
+
+  // --------------------------------------------------
+  // Create a delete button for this shift
+  // --------------------------------------------------
+
+  const deleteButton = document.createElement("button");
+
+  deleteButton.textContent = "Delete";
+  deleteButton.type = "button";
+  deleteButton.classList.add("delete-button");
+
+  deleteButton.addEventListener("click", function () {
+    const confirmed = confirm("Are you sure you want to delete this shift?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    // Remove this shift from the array
+    shiftEntries.splice(index, 1);
+
+    // Save the updated array in localStorage
+    localStorage.setItem("shiftEntries", JSON.stringify(shiftEntries));
+
+    // Refresh the displayed shift list
+    renderShiftEntries();
+  });
+
+  entryCard.append(
+    entryTitle,
+    productInfo,
+    workInfo,
+    rateInfo,
+    bonusInfo,
+    deleteButton,
+  );
+
+  emptyEntriesMessage.hidden = true;
+
+  shiftList.append(entryCard);
+}
+
+// --------------------------------------------------
+// Helper function: render all saved shift entries
+// --------------------------------------------------
+
+function renderShiftEntries() {
+  // Remove all currently displayed shift cards
+  shiftList.replaceChildren();
+
+  // If there are no saved shifts, show the empty message
+  if (shiftEntries.length === 0) {
+    emptyEntriesMessage.hidden = false;
+    return;
+  }
+
+  // If shifts exist, hide the empty message
+  emptyEntriesMessage.hidden = true;
+
+  // Display every shift stored in the array
+  shiftEntries.forEach(function (shiftEntry, index) {
+    displayShiftEntry(shiftEntry, index);
+  });
+}
+
+// ==================================================
+// APP DATA: SAVED SHIFT ENTRIES
+// Used later in JS STEP 6
+// ==================================================
+
+// Try to get previously saved shifts from localStorage.
+// If there are none, start with an empty array.
+const shiftEntries = JSON.parse(localStorage.getItem("shiftEntries")) || [];
+
+// Development check (Why JSON.parse()? Because localStorage can only store text.
+// Your shifts are JavaScript objects, so we need JSON to convert between the two forms.)
+console.log("Saved shifts:", shiftEntries);
+
+// ==================================================
+// JS STEP 6.2: DISPLAY SAVED SHIFTS ON PAGE LOAD
+// ==================================================
+
+renderShiftEntries();
+
 // ==================================================
 // JS STEP 2: LISTEN FOR FORM SUBMISSION AND READ INPUT
 // ==================================================
@@ -180,45 +289,23 @@ shiftForm.addEventListener("submit", function (event) {
     rate: rateNumber,
     bonus: bonus,
   };
+  // ============================================
+  // Add the new shift to the array.(JS STEP 6).
+  shiftEntries.push(shiftEntry);
+
+  // Save the updated array in localStorage
+  localStorage.setItem("shiftEntries", JSON.stringify(shiftEntries));
+  // ================================================================
 
   // Development check
   console.log("Shift entry:", shiftEntry);
 
-  // Create a new HTML article for the shift
-  const entryCard = document.createElement("article");
-  entryCard.classList.add("shift-entry");
-
-  // Create the title (security code entryTitle.textContent, not using http:// to avoid XSS)
-  const entryTitle = document.createElement("h3");
-  entryTitle.textContent =
-    formatDate(shiftEntry.date) + " – " + shiftEntry.project;
-
-  // Create product and batch information
-  const productInfo = document.createElement("p");
-  productInfo.textContent =
-    "Product: " + shiftEntry.product + " | Batch: " + shiftEntry.batch;
-
-  // Create hours and units information
-  const workInfo = document.createElement("p");
-  workInfo.textContent =
-    "Hours: " + shiftEntry.hours + " | Units: " + shiftEntry.units;
-
-  // Create rate information
-  const rateInfo = document.createElement("p");
-  rateInfo.textContent = "Rate: €" + shiftEntry.rate.toFixed(3) + " / unit";
-
-  // Create bonus information
-  const bonusInfo = document.createElement("p");
-  bonusInfo.textContent = "Estimated bonus: €" + shiftEntry.bonus.toFixed(2);
-
-  // Put all the new elements inside the card
-  entryCard.append(entryTitle, productInfo, workInfo, rateInfo, bonusInfo);
-
-  // Hide the "No shifts added yet" message
-  emptyEntriesMessage.hidden = true;
-
-  // Add the completed card to the webpage
-  shiftList.append(entryCard);
+  // --------------------------------------------------
+  // Display the shift entry
+  // The DOM creation code was moved to the reusable
+  // displayShiftEntry() helper function below.
+  // --------------------------------------------------
+  renderShiftEntries();
 
   // Clear the form for the next shift
   shiftForm.reset();
