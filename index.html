@@ -60,9 +60,11 @@
                 type="text"
                 id="productNumber"
                 name="productNumber"
+                list="productSuggestions"
                 placeholder="Example: P-1052"
                 required
               />
+              <datalist id="productSuggestions"></datalist>
             </div>
 
             <!-- Batch number -->
@@ -138,10 +140,110 @@
 
           <div id="shiftList" aria-live="polite"></div>
         </section>
-
         <p>
           Track your shifts, production units and estimated performance bonuses.
         </p>
+      </section>
+
+      <!-- ==================================================
+     STEP 8: BONUS SUMMARY
+     ================================================== -->
+
+      <section id="bonusSummarySection">
+        <h2>Bonus Summary</h2>
+
+        <p>Estimated accumulated bonus from your saved shift entries.</p>
+
+        <div id="bonusSummary">
+          <p>
+            This month:
+            <strong id="monthlyBonus">€0.00</strong>
+          </p>
+          <p>
+            This week:
+            <strong id="weeklyBonus">€0.00</strong>
+          </p>
+        </div>
+      </section>
+
+      <!-- ==================================================
+     STEP 7: PRODUCT RATE BOOK
+     ================================================== -->
+
+      <section id="rateBookSection">
+        <!-- STEP 7.2: Product Rate Book toggle -->
+        <div class="rate-book-header">
+          <h2>Product Rate Book</h2>
+
+          <button
+            type="button"
+            id="rateBookToggle"
+            aria-expanded="false"
+            aria-controls="rateBookContent"
+          >
+            Open
+          </button>
+        </div>
+
+        <!-- Collapsible Product Rate Book content -->
+        <div id="rateBookContent" hidden>
+          <p>
+            Save product numbers, project names and bonus rates for quick use
+            when adding future shifts.
+          </p>
+
+          <form id="rateBookForm" novalidate>
+            <!-- Product number -->
+            <div>
+              <label for="rateProductNumber">Product number</label>
+              <input
+                type="text"
+                id="rateProductNumber"
+                name="rateProductNumber"
+                placeholder="Example: P-1052"
+                required
+              />
+            </div>
+
+            <!-- Project name -->
+            <div>
+              <label for="rateProjectName">Project</label>
+              <input
+                type="text"
+                id="rateProjectName"
+                name="rateProjectName"
+                placeholder="Example: Project A"
+                required
+              />
+            </div>
+
+            <!-- Bonus rate -->
+            <div>
+              <label for="rateValue">Bonus rate per unit (€)</label>
+              <input
+                type="number"
+                id="rateValue"
+                name="rateValue"
+                min="0"
+                step="0.001"
+                placeholder="Example: 0.08"
+                required
+              />
+            </div>
+
+            <!-- Message area -->
+            <p id="rateBookMessage" aria-live="polite"></p>
+
+            <!-- Save button -->
+            <button type="submit">Save Product</button>
+          </form>
+
+          <!-- Saved products will appear here -->
+          <div id="rateBookList">
+            <p id="emptyRateBookMessage">No products saved yet.</p>
+          </div>
+        </div>
+        <!-- End of rateBookContent -->
       </section>
     </main>
   </body>

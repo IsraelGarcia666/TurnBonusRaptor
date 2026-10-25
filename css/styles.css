@@ -122,7 +122,7 @@ header {
 header h1 {
   margin: 0;
   font-size: 2.2rem;
-  color: #5807ae;
+  color: #def0d5df;
 }
 
 header p {
@@ -169,6 +169,8 @@ section {
 
   border: 1px solid var(--border);
   border-radius: 12px;
+
+  overflow-wrap: anywhere;
 }
 
 .shift-entry h3 {
@@ -177,6 +179,31 @@ section {
 }
 
 .shift-entry p {
+  margin: 0.3rem 0;
+}
+
+/* --------------------------------------------------
+   Product Rate Book entries
+   -------------------------------------------------- */
+
+.rate-book-entry {
+  margin-top: 1rem;
+  padding: 1rem;
+
+  background-color: rgba(0, 0, 0, 0.18);
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  overflow-wrap: anywhere;
+}
+
+.rate-book-entry h3 {
+  margin-top: 0;
+  color: var(--heading-accent);
+}
+
+.rate-book-entry p {
   margin: 0.3rem 0;
 }
 
@@ -272,7 +299,8 @@ button:hover {
    STEP 3.12: Informational messages
    -------------------------------------------------- */
 
-#shiftMessage {
+#shiftMessage,
+#rateBookMessage {
   min-height: 1.5rem;
 }
 
@@ -363,16 +391,9 @@ button:hover {
   }
 }
 
-.shift-entry {
-  overflow-wrap: anywhere;
-}
 /* --------------------------------------------------
    STEP 3.18: Text colour hierarchy
    -------------------------------------------------- */
-
-header h1 {
-  color: #def0d5df;
-}
 
 section h2 {
   color: var(--heading-accent);

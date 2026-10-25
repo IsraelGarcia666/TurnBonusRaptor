@@ -22,6 +22,7 @@ const shiftForm = document.querySelector("#shiftForm");
 const shiftDate = document.querySelector("#shiftDate");
 const projectName = document.querySelector("#projectName");
 const productNumber = document.querySelector("#productNumber");
+const productSuggestions = document.querySelector("#productSuggestions");
 const batchNumber = document.querySelector("#batchNumber");
 const hoursWorked = document.querySelector("#hoursWorked");
 const unitsCompleted = document.querySelector("#unitsCompleted");
@@ -33,6 +34,29 @@ const shiftMessage = document.querySelector("#shiftMessage");
 // Select the shift entries area (STEP 5)
 const shiftList = document.querySelector("#shiftList");
 const emptyEntriesMessage = document.querySelector("#emptyEntriesMessage");
+
+// Select the Bonus Summary elements (STEP 8)
+const monthlyBonus = document.querySelector("#monthlyBonus");
+const weeklyBonus = document.querySelector("#weeklyBonus");
+
+// Select the Product Rate Book toggle elements (STEP 7)
+const rateBookToggle = document.querySelector("#rateBookToggle");
+const rateBookContent = document.querySelector("#rateBookContent");
+
+// Select the Product Rate Book form elements (STEP 7)
+const rateBookForm = document.querySelector("#rateBookForm");
+
+const rateProductNumber = document.querySelector("#rateProductNumber");
+
+const rateProjectName = document.querySelector("#rateProjectName");
+
+const rateValue = document.querySelector("#rateValue");
+
+const rateBookMessage = document.querySelector("#rateBookMessage");
+
+const rateBookList = document.querySelector("#rateBookList");
+
+const emptyRateBookMessage = document.querySelector("#emptyRateBookMessage");
 
 // Development check: confirm the form was found in the DOM
 console.log(shiftForm);
@@ -98,6 +122,9 @@ function displayShiftEntry(shiftEntry, index) {
 
     // Refresh the displayed shift list
     renderShiftEntries();
+    // Refresh the monthly/weekly bonus
+    renderMonthlyBonus();
+    renderWeeklyBonus();
   });
 
   entryCard.append(
@@ -137,6 +164,190 @@ function renderShiftEntries() {
   });
 }
 
+// --------------------------------------------------
+// Helper function: calculate this month's bonus
+// --------------------------------------------------
+
+function renderMonthlyBonus() {
+  // Get the current year and month from the browser
+  const now = new Date();
+
+  const currentYear = now.getFullYear();
+
+  const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
+
+  // Example: "2026-10"
+  const currentMonthKey = currentYear + "-" + currentMonth;
+
+  // Start the monthly total at zero
+  let monthlyTotal = 0;
+
+  // Check every saved shift
+  shiftEntries.forEach(function (shiftEntry) {
+    // Only count shifts from the current month
+    if (shiftEntry.date.startsWith(currentMonthKey)) {
+      monthlyTotal += shiftEntry.bonus;
+    }
+  });
+
+  // Display the result
+  monthlyBonus.textContent = "€" + monthlyTotal.toFixed(2);
+}
+
+// --------------------------------------------------
+// Helper function: calculate this week's bonus
+// Week runs from Monday to Sunday
+// --------------------------------------------------
+
+function renderWeeklyBonus() {
+  const now = new Date();
+
+  // JavaScript:
+  // Sunday = 0, Monday = 1, ... Saturday = 6
+  const dayOfWeek = now.getDay();
+
+  // Convert that into "days since Monday"
+  const daysSinceMonday = (dayOfWeek + 6) % 7;
+
+  // Find this week's Monday
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - daysSinceMonday);
+
+  // Find this week's Sunday
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  // Convert a Date into YYYY-MM-DD
+  function getDateKey(date) {
+    const year = date.getFullYear();
+
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return year + "-" + month + "-" + day;
+  }
+
+  const mondayKey = getDateKey(monday);
+  const sundayKey = getDateKey(sunday);
+
+  let weeklyTotal = 0;
+
+  shiftEntries.forEach(function (shiftEntry) {
+    if (shiftEntry.date >= mondayKey && shiftEntry.date <= sundayKey) {
+      weeklyTotal += shiftEntry.bonus;
+    }
+  });
+
+  weeklyBonus.textContent = "€" + weeklyTotal.toFixed(2);
+}
+
+// --------------------------------------------------
+// Helper function: display one Product Rate Book entry (for step 7.5B)
+// --------------------------------------------------
+
+function displayProductRateEntry(productRateEntry, index) {
+  // Create a card for one saved product
+  const productCard = document.createElement("article");
+  productCard.classList.add("rate-book-entry");
+
+  // Product number
+  const productTitle = document.createElement("h3");
+  productTitle.textContent = productRateEntry.product;
+
+  // Project name
+  const projectInfo = document.createElement("p");
+  projectInfo.textContent = "Project: " + productRateEntry.project;
+
+  // Bonus rate
+  const rateInfo = document.createElement("p");
+  rateInfo.textContent =
+    "Rate: €" + productRateEntry.rate.toFixed(3) + " / unit";
+
+  // Delete button
+  const deleteButton = document.createElement("button");
+
+  deleteButton.textContent = "Delete";
+  deleteButton.type = "button";
+  deleteButton.classList.add("delete-button");
+
+  deleteButton.addEventListener("click", function () {
+    const confirmed = confirm("Are you sure you want to delete this product?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    // Remove one product from the array
+    productRates.splice(index, 1);
+
+    // Update localStorage
+    localStorage.setItem("productRates", JSON.stringify(productRates));
+
+    // Refresh the displayed Rate Book
+    renderProductRates();
+
+    // Refresh the product suggestions
+    renderProductSuggestions();
+  });
+
+  // Put the information inside the card
+  productCard.append(productTitle, projectInfo, rateInfo, deleteButton);
+
+  // Add the card to the Product Rate Book
+  rateBookList.append(productCard);
+}
+
+// --------------------------------------------------
+// Helper function: render all Product Rate Book entries (for step 7.5B)
+// --------------------------------------------------
+
+function renderProductRates() {
+  // Remove only previously displayed product cards.
+  // Keep the "No products saved yet" message in the DOM.
+  const existingProductCards =
+    rateBookList.querySelectorAll(".rate-book-entry");
+
+  existingProductCards.forEach(function (card) {
+    card.remove();
+  });
+
+  // If there are no saved products, show the empty message
+  if (productRates.length === 0) {
+    emptyRateBookMessage.hidden = false;
+    return;
+  }
+
+  // If products exist, hide the empty message
+  emptyRateBookMessage.hidden = true;
+
+  // Display every saved product
+  productRates.forEach(function (productRateEntry, index) {
+    displayProductRateEntry(productRateEntry, index);
+  });
+}
+
+// --------------------------------------------------
+// Helper function: show saved products as suggestions
+// --------------------------------------------------
+
+function renderProductSuggestions() {
+  // Remove old suggestions
+  productSuggestions.replaceChildren();
+
+  // Create one suggestion for every saved product
+  productRates.forEach(function (productRateEntry) {
+    const option = document.createElement("option");
+
+    option.value = productRateEntry.product;
+
+    option.label =
+      productRateEntry.project + " — €" + productRateEntry.rate.toFixed(3);
+
+    productSuggestions.append(option);
+  });
+}
+
 // ==================================================
 // APP DATA: SAVED SHIFT ENTRIES
 // Used later in JS STEP 6
@@ -147,15 +358,35 @@ function renderShiftEntries() {
 const shiftEntries = JSON.parse(localStorage.getItem("shiftEntries")) || [];
 
 // Development check (Why JSON.parse()? Because localStorage can only store text.
-// Your shifts are JavaScript objects, so we need JSON to convert between the two forms.)
+// Shifts are JavaScript objects, it needs JSON to convert between the two forms.)
 console.log("Saved shifts:", shiftEntries);
 
+// ==================================================
+// APP DATA: SAVED PRODUCT RATES
+// Used in JS STEP 7
+// ==================================================
+
+// Try to load previously saved products from localStorage.
+// If none exist, start with an empty array.
+const productRates = JSON.parse(localStorage.getItem("productRates")) || [];
+
+// Development check
+console.log("Saved product rates:", productRates);
+
+// ==================================================
+// JS STEP 7.5c: DISPLAY SAVED PRODUCT RATES ON PAGE LOAD
+// ==================================================
+
+renderProductRates();
+renderProductSuggestions();
 // ==================================================
 // JS STEP 6.2: DISPLAY SAVED SHIFTS ON PAGE LOAD
 // ==================================================
 
 renderShiftEntries();
-
+// ===Step 8.1b: DISPLAY THIS MONTH'S/week BONUS ON PAGE LOAD
+renderMonthlyBonus();
+renderWeeklyBonus();
 // ==================================================
 // JS STEP 2: LISTEN FOR FORM SUBMISSION AND READ INPUT
 // ==================================================
@@ -306,7 +537,150 @@ shiftForm.addEventListener("submit", function (event) {
   // displayShiftEntry() helper function below.
   // --------------------------------------------------
   renderShiftEntries();
+  // refresh the monthly/weekly bonus (STEP 8)
+  renderMonthlyBonus();
+  renderWeeklyBonus();
 
   // Clear the form for the next shift
   shiftForm.reset();
+});
+
+// ==================================================
+// JS STEP 7.3: OPEN AND CLOSE THE PRODUCT RATE BOOK
+// ==================================================
+
+rateBookToggle.addEventListener("click", function () {
+  // Check whether the Rate Book content is currently hidden
+  const isHidden = rateBookContent.hidden;
+
+  // Switch between hidden and visible
+  rateBookContent.hidden = !isHidden;
+
+  // Update the accessibility information
+  rateBookToggle.setAttribute("aria-expanded", String(isHidden));
+
+  // Change the button text
+  if (isHidden) {
+    rateBookToggle.textContent = "Close";
+  } else {
+    rateBookToggle.textContent = "Open";
+  }
+});
+
+// ==================================================
+// JS STEP 7.4C: SAVE PRODUCT RATE BOOK ENTRY
+// ==================================================
+
+rateBookForm.addEventListener("submit", function (event) {
+  // Stop the browser from refreshing the page
+  event.preventDefault();
+
+  // Read the values entered in the Rate Book form
+  const product = rateProductNumber.value.trim();
+  const project = rateProjectName.value.trim();
+  const rate = rateValue.value;
+
+  // Clear previous messages and error styles
+  rateBookMessage.textContent = "";
+  rateBookMessage.className = "";
+
+  rateProductNumber.classList.remove("input-error");
+  rateProjectName.classList.remove("input-error");
+  rateValue.classList.remove("input-error");
+
+  // Track whether something is wrong
+  let hasError = false;
+
+  // Validate product number
+  if (product === "") {
+    rateProductNumber.classList.add("input-error");
+    hasError = true;
+  }
+
+  // Validate project name
+  if (project === "") {
+    rateProjectName.classList.add("input-error");
+    hasError = true;
+  }
+
+  // Rate may be 0, but not empty or negative
+  if (rate === "" || Number(rate) < 0) {
+    rateValue.classList.add("input-error");
+    hasError = true;
+  }
+
+  // Stop if validation failed
+  if (hasError) {
+    rateBookMessage.textContent =
+      "Please complete all Product Rate Book fields correctly.";
+
+    rateBookMessage.className = "error-message";
+
+    return;
+  }
+
+  // Check whether this product number already exists
+  const productAlreadyExists = productRates.some(function (productRateEntry) {
+    return productRateEntry.product.toLowerCase() === product.toLowerCase();
+  });
+
+  // Stop if the product is already in the Rate Book
+  if (productAlreadyExists) {
+    rateProductNumber.classList.add("input-error");
+
+    rateBookMessage.textContent =
+      "This product number already exists in the Product Rate Book.";
+
+    rateBookMessage.className = "error-message";
+
+    return;
+  }
+
+  // Create one product-rate object
+  const productRateEntry = {
+    product: product,
+    project: project,
+    rate: Number(rate),
+  };
+
+  // Development check
+  console.log("Product rate entry:", productRateEntry);
+
+  // Add the new product to the Product Rate Book array
+  productRates.push(productRateEntry);
+
+  // Save the updated Product Rate Book in localStorage
+  localStorage.setItem("productRates", JSON.stringify(productRates));
+
+  // Development check
+  console.log("Updated product rates:", productRates);
+
+  // Refresh the displayed Product Rate Book
+  renderProductRates();
+  // Refresh the product suggestions
+  renderProductSuggestions();
+
+  // Clear the Rate Book form
+  rateBookForm.reset();
+});
+
+// ==================================================
+// JS STEP 7.7: USE PRODUCT RATE BOOK IN SHIFT FORM
+// ==================================================
+
+productNumber.addEventListener("input", function () {
+  // Read what the user is typing in the Shift form
+  const enteredProduct = productNumber.value.trim().toLowerCase();
+
+  // Look for an exact matching product in the Rate Book
+  const savedProduct = productRates.find(function (productRateEntry) {
+    return productRateEntry.product.toLowerCase() === enteredProduct;
+  });
+
+  // If a matching saved product exists,
+  // automatically fill its project and bonus rate
+  if (savedProduct) {
+    projectName.value = savedProduct.project;
+    unitRate.value = savedProduct.rate;
+  }
 });
