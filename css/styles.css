@@ -409,6 +409,24 @@ section h2 {
   color: var(--heading-accent);
 }
 
+/* Section-specific heading accents */
+
+#shiftEntrySection h2 {
+  color: #efc15e;
+}
+
+#entriesSection h2 {
+  color: #82dce5;
+}
+
+#bonusSummarySection h2 {
+  color: #91e4a8;
+}
+
+#rateBookSection h2 {
+  color: #c5adff;
+}
+
 label {
   color: var(--label-text);
 }
