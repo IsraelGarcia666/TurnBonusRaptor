@@ -37,6 +37,10 @@ const emptyEntriesMessage = document.querySelector("#emptyEntriesMessage");
 
 // Select the Bonus Summary elements (STEP 8)
 const monthlyBonus = document.querySelector("#monthlyBonus");
+const monthlyShiftCount = document.querySelector("#monthlyShiftCount");
+
+const monthlyUnits = document.querySelector("#monthlyUnits");
+const summaryMonth = document.querySelector("#summaryMonth");
 const weeklyBonus = document.querySelector("#weeklyBonus");
 
 // Select the Product Rate Book toggle elements (STEP 7)
@@ -165,33 +169,43 @@ function renderShiftEntries() {
 }
 
 // --------------------------------------------------
-// Helper function: calculate this month's bonus
+// Helper function: calculate summary for selected month
 // --------------------------------------------------
 
 function renderMonthlyBonus() {
-  // Get the current year and month from the browser
-  const now = new Date();
-
-  const currentYear = now.getFullYear();
-
-  const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
-
+  // Read the selected month from the month picker.
   // Example: "2026-10"
-  const currentMonthKey = currentYear + "-" + currentMonth;
+  const selectedMonth = summaryMonth.value;
 
-  // Start the monthly total at zero
+  // Start all monthly totals at zero
   let monthlyTotal = 0;
+  let unitsTotal = 0;
+
+  // Store the dates of shifts without duplicates
+  const shiftDates = new Set();
 
   // Check every saved shift
   shiftEntries.forEach(function (shiftEntry) {
-    // Only count shifts from the current month
-    if (shiftEntry.date.startsWith(currentMonthKey)) {
+    // Only count shifts belonging to the selected month
+    if (shiftEntry.date.startsWith(selectedMonth)) {
+      // Add the bonus from this production entry
       monthlyTotal += shiftEntry.bonus;
+
+      // Add the completed units from this production entry
+      unitsTotal += shiftEntry.units;
+
+      // Record the work date.
+      // A Set keeps each date only once.
+      shiftDates.add(shiftEntry.date);
     }
   });
 
-  // Display the result
+  // Display the results
   monthlyBonus.textContent = "€" + monthlyTotal.toFixed(2);
+
+  monthlyShiftCount.textContent = shiftDates.size;
+
+  monthlyUnits.textContent = unitsTotal;
 }
 
 // --------------------------------------------------
@@ -379,6 +393,15 @@ console.log("Saved product rates:", productRates);
 
 renderProductRates();
 renderProductSuggestions();
+
+// Set the month selector to the current month by default
+const today = new Date();
+
+const currentMonthValue =
+  today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0");
+
+summaryMonth.value = currentMonthValue;
+
 // ==================================================
 // JS STEP 6.2: DISPLAY SAVED SHIFTS ON PAGE LOAD
 // ==================================================
@@ -495,6 +518,18 @@ shiftForm.addEventListener("submit", function (event) {
   // JS STEP 4: CALCULATE THE BONUS
   // ==================================================
 
+  // Calculate the total recorded hours for this work date
+  const existingHoursForDate = shiftEntries
+    .filter(function (shiftEntry) {
+      return shiftEntry.date === date;
+    })
+    .reduce(function (total, shiftEntry) {
+      return total + shiftEntry.hours;
+    }, 0);
+
+  // Include the new work entry
+  const totalHoursForDate = existingHoursForDate + Number(hours);
+
   // Convert the input values from text to numbers
   const unitsNumber = Number(units);
   const rateNumber = Number(rate);
@@ -540,6 +575,18 @@ shiftForm.addEventListener("submit", function (event) {
   // refresh the monthly/weekly bonus (STEP 8)
   renderMonthlyBonus();
   renderWeeklyBonus();
+
+  // Warn if the total recorded work time exceeds 7.5 hours
+  if (totalHoursForDate > 7.5) {
+    shiftMessage.textContent =
+      "🦖 " +
+      totalHoursForDate.toFixed(1) +
+      " hours logged! Achievement unlocked: Workasaurus! " +
+      "But remember, happiness isn't just about money. " +
+      "Even a Raptor needs to recharge. Don't forget to rest!";
+
+    shiftMessage.className = "warning-message";
+  }
 
   // Clear the form for the next shift
   shiftForm.reset();
@@ -683,4 +730,12 @@ productNumber.addEventListener("input", function () {
     projectName.value = savedProduct.project;
     unitRate.value = savedProduct.rate;
   }
+});
+
+// ==================================================
+// JS STEP 8.3: CHANGE MONTHLY SUMMARY
+// ==================================================
+
+summaryMonth.addEventListener("change", function () {
+  renderMonthlyBonus();
 });

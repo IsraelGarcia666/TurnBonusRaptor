@@ -27,7 +27,7 @@
 
         <!-- STEP 2: Shift entry form -->
         <section id="shiftEntrySection">
-          <h2>Add Shift Entry</h2>
+          <h2>Add Work Entry</h2>
 
           <p>
             Record the work completed during one shift. The estimated bonus will
@@ -134,14 +134,15 @@
      ================================================== -->
 
         <section id="entriesSection">
-          <h2>Shift Entries</h2>
+          <h2>Work Entries</h2>
 
-          <p id="emptyEntriesMessage">No shifts added yet.</p>
+          <p id="emptyEntriesMessage">No work entries added yet.</p>
 
           <div id="shiftList" aria-live="polite"></div>
         </section>
         <p>
-          Track your shifts, production units and estimated performance bonuses.
+          Track your work entries, production units and estimated performance
+          bonuses.
         </p>
       </section>
 
@@ -154,11 +155,28 @@
 
         <p>Estimated accumulated bonus from your saved shift entries.</p>
 
+        <div>
+          <label for="summaryMonth">View month</label>
+
+          <input type="month" id="summaryMonth" name="summaryMonth" />
+        </div>
+
         <div id="bonusSummary">
           <p>
-            This month:
+            Selected month:
             <strong id="monthlyBonus">€0.00</strong>
           </p>
+
+          <p>
+            Shifts:
+            <strong id="monthlyShiftCount">0</strong>
+          </p>
+
+          <p>
+            Units:
+            <strong id="monthlyUnits">0</strong>
+          </p>
+
           <p>
             This week:
             <strong id="weeklyBonus">€0.00</strong>
