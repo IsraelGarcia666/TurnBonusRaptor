@@ -185,6 +185,9 @@ I am pleased with the functionality, responsive layout and the practical connect
 
 ## 10. Demonstration video
 
-**Demo video:** _Link to be added before submission._
+**Demo video:**
+[Watch the TurnBonusRaptor demonstration][def]
 
 The video will show the live application, a new product in the Rate Book, adding work entries, automatic bonus calculations, validation, the Workasaurus warning, monthly/weekly summaries, and responsive design.
+
+[def]: https://laureauas-my.sharepoint.com/:v:/g/personal/isg00005_laurea_fi/IQA544DIqy-IQ5gz4u9D6BKhATkN7Xl4jyDb5K-yFrP35HQ?e=X214wa
